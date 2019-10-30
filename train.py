@@ -148,13 +148,13 @@ if __name__ == '__main__':
                 gs, _ = sess.run([g.global_step, g.train_op])
 
                 # Write checkpoint files at every 1k steps
-                if gs % 1000 == 0:
-                    sv.saver.save(sess, logdir + '/model_gs_{}'.format(str(gs // 1000).zfill(3) + "k"))
+                if gs % 100 == 0:
+                    sv.saver.save(sess, logdir + '/model_gs_{}'.format(str(gs // 100).zfill(3) + "k"))
 
                     if num==1:
                         # plot alignment
                         alignments = sess.run(g.alignments)
-                        plot_alignment(alignments[0], str(gs // 1000).zfill(3) + "k", logdir)
+                        plot_alignment(alignments[0], str(gs // 100).zfill(3) + "k", logdir)
 
                 # break
                 if gs > hp.num_iterations: break

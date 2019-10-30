@@ -15,6 +15,7 @@ import codecs
 import re
 import os
 import unicodedata
+import StringIO
 
 def load_vocab():
     char2idx = {char: idx for idx, char in enumerate(hp.vocab)}
@@ -29,6 +30,17 @@ def text_normalize(text):
     text = re.sub("[^{}]".format(hp.vocab), " ", text)
     text = re.sub("[ ]+", " ", text)
     return text
+
+def realtime_load(text):
+    char2idx, idx2char = load_vocab()
+
+    # Parse
+    lines = StringIO.StringIO("1. {}".format(text)).readlines()
+    sents = [text_normalize(line.decode('utf-8', 'ignore').split(" ", 1)[-1]).strip() + "E" for line in lines]  # text normalization, E: EOS
+    texts = np.zeros((len(sents), hp.max_N), np.int32)
+    for i, sent in enumerate(sents):
+        texts[i, :len(sent)] = [char2idx[char] for char in sent]
+    return texts, len(line.split(" ", 1))
 
 def load_data(mode="train"):
     '''Loads data
